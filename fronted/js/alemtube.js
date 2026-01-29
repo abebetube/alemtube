@@ -1,4 +1,3 @@
-// alemtube.js
 console.log("🎬 AlemTube מתחיל...");
 
 let playlist = [];
@@ -30,7 +29,7 @@ async function searchVideos() {
   document.getElementById("player-container").innerHTML = "";
 
   try {
-    // קריאה ל-backend
+    // כאן תשים את הכתובת של ה-backend שלך
     const res = await fetch(`http://localhost:3000/search?q=${encodeURIComponent(query)}`);
     const data = await res.json();
 
@@ -105,4 +104,41 @@ function toggleFullScreen() {
   }
 }
 
-// פונקציית fireworks וה-splash נשארים כפי שיש לך
+// Splash + fireworks
+window.addEventListener("load", () => {
+  const splash = document.getElementById("splash");
+  let count = 0;
+  const interval = setInterval(() => {
+    launchFireworks();
+    count++;
+    if (count >= 4) clearInterval(interval);
+  }, 700);
+  setTimeout(() => splash.style.display = "none", 4000);
+});
+
+function launchFireworks(count = 5) {
+  const container = document.querySelector('.fireworks');
+  for (let i = 0; i < count; i++) {
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * window.innerHeight;
+
+    for (let j = 0; j < 30; j++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+
+      const angle = (Math.PI * 2 * j) / 30;
+      const distance = 80 + Math.random() * 50;
+      const dx = Math.cos(angle) * distance;
+      const dy = Math.sin(angle) * distance;
+
+      particle.style.setProperty('--x', `${dx}px`);
+      particle.style.setProperty('--y', `${dy}px`);
+      particle.style.left = `${x}px`;
+      particle.style.top = `${y}px`;
+      particle.style.background = `hsl(${Math.random() * 360}, 100%, 60%)`;
+
+      container.appendChild(particle);
+      setTimeout(() => particle.remove(), 1500);
+    }
+  }
+}
