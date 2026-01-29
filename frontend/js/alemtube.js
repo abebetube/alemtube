@@ -3,10 +3,8 @@ console.log("🎬 AlemTube מתחיל...");
 let playlist = [];
 let currentIndex = 0;
 
-// אתחול
 window.onload = () => loadFromCache();
 
-// חיבור שדה החיפוש
 const searchInput = document.getElementById("searchInput");
 searchInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
@@ -14,6 +12,7 @@ searchInput.addEventListener("keydown", (e) => {
     searchVideos();
   }
 });
+
 console.log("✅ שדה חיפוש מחובר");
 
 // חיפוש סרטונים דרך ה-Backend שלך
