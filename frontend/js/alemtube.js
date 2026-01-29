@@ -13,9 +13,7 @@ searchInput.addEventListener("keydown", (e) => {
   }
 });
 
-console.log("✅ שדה חיפוש מחובר");
-
-// חיפוש סרטונים דרך ה-Backend שלך
+// חיפוש סרטונים דרך ה־Backend שלך ב-Render
 async function searchVideos() {
   const query = searchInput.value.trim();
   if (!query) return;
@@ -28,8 +26,8 @@ async function searchVideos() {
   try {
     const res = await fetch(`https://alemtube-v.onrender.com/search?q=${encodeURIComponent(query)}`);
     const data = await res.json();
-
     playlist = data;
+
     if (playlist.length === 0) return alert("לא נמצאו סרטונים");
 
     currentIndex = 0;
@@ -45,10 +43,8 @@ function playVideo(index) {
   const video = playlist[index];
   if (!video) return;
 
-  const playerContainer = document.getElementById("player-container");
-  playerContainer.innerHTML = `<iframe id="ytplayer" src="https://www.youtube-nocookie.com/embed/${video.videoId}?autoplay=1&rel=0&modestbranding=1" allowfullscreen allow="autoplay"></iframe>`;
-
-  setTimeout(() => playerContainer.scrollIntoView({ behavior: "smooth" }), 500);
+  document.getElementById("player-container").innerHTML =
+    `<iframe src="https://www.youtube-nocookie.com/embed/${video.videoId}?autoplay=1&rel=0&modestbranding=1" allowfullscreen allow="autoplay"></iframe>`;
 
   const resultsDiv = document.getElementById("results");
   resultsDiv.innerHTML = "";
@@ -57,17 +53,13 @@ function playVideo(index) {
     if (i === index) return;
     const div = document.createElement("div");
     div.className = "video-item";
-    div.onclick = () => {
-      currentIndex = i;
-      saveToCache();
-      playVideo(i);
-    };
+    div.onclick = () => { currentIndex = i; saveToCache(); playVideo(i); };
     div.innerHTML = `<img src="${v.thumb}" alt="${v.title}"><div class="video-title">${v.title}</div>`;
     resultsDiv.appendChild(div);
   });
 }
 
-// שמירת וניגון מה-cache
+// Cache
 function saveToCache() {
   localStorage.setItem("abe_playlist", JSON.stringify(playlist));
   localStorage.setItem("abe_index", currentIndex);
@@ -112,22 +104,12 @@ function launchFireworks(count = 5) {
   for (let i = 0; i < count; i++) {
     const x = Math.random() * window.innerWidth;
     const y = Math.random() * window.innerHeight;
-
     for (let j = 0; j < 30; j++) {
       const particle = document.createElement('div');
       particle.className = 'particle';
-
-      const angle = (Math.PI * 2 * j) / 30;
-      const distance = 80 + Math.random() * 50;
-      const dx = Math.cos(angle) * distance;
-      const dy = Math.sin(angle) * distance;
-
-      particle.style.setProperty('--x', `${dx}px`);
-      particle.style.setProperty('--y', `${dy}px`);
       particle.style.left = `${x}px`;
       particle.style.top = `${y}px`;
-      particle.style.background = `hsl(${Math.random() * 360}, 100%, 60%)`;
-
+      particle.style.background = `hsl(${Math.random()*360},100%,60%)`;
       container.appendChild(particle);
       setTimeout(() => particle.remove(), 1500);
     }
