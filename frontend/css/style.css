@@ -3,7 +3,6 @@ body {
   background-color: #f9f9f9;
   margin: 0;
   padding: 0;
-  direction: rtl;
 }
 
 header {
@@ -32,7 +31,6 @@ header {
   padding: 0.7rem;
   border: 1px solid #ccc;
   border-radius: 8px;
-  font-size: 1rem;
 }
 
 .search-box button {
@@ -42,22 +40,17 @@ header {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
 }
 
 #player-container {
   margin-bottom: 2rem;
-  display: flex;
-  justify-content: center;
 }
 
 #player-container iframe {
   width: 100%;
-  max-width: 100%;
   aspect-ratio: 16/9;
-  border: none;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border: none;
 }
 
 #results {
@@ -69,29 +62,17 @@ header {
 .video-item {
   background-color: white;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s;
-  display: flex;
-  flex-direction: column;
-}
-
-.video-item:hover {
-  transform: translateY(-5px);
 }
 
 .video-item img {
   width: 100%;
-  height: auto;
-  object-fit: cover;
 }
 
 .video-title {
-  padding: 0.6rem;
-  font-size: 0.95rem;
+  padding: 0.5rem;
   font-weight: bold;
-  color: #333;
 }
 
 #fullscreen-btn {
@@ -102,17 +83,10 @@ header {
   padding: 0.7rem 1rem;
   background-color: #333;
   color: white;
-  border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 0.9rem;
 }
 
-.ad, .ads, .advertisement {
-  display: none !important;
-}
-
-/* Splash + fireworks */
 #splash {
   position: fixed;
   inset: 0;
@@ -121,32 +95,7 @@ header {
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  overflow: hidden;
-}
-
-.particle {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  animation: explode 1s ease-out forwards;
-  top: 50%;
-  left: 50%;
-}
-
-@keyframes explode {
-  0% {
-    opacity: 1;
-    transform: translate(-50%, -50%) translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) translateY(-120px);
-  }
-}
-
-.logo-area {
-  text-align: center;
+  flex-direction: column;
 }
 
 .logo-area img {
@@ -154,17 +103,19 @@ header {
 }
 
 .logo-area .title {
-  font-size: 2rem;
   color: #cc0000;
+  font-size: 2rem;
 }
 
-@media (max-width: 600px) {
-  .search-box {
-    flex-direction: column;
-  }
+.fireworks .particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: explode 1s ease-out forwards;
+}
 
-  #fullscreen-btn {
-    left: 50%;
-    transform: translateX(-50%);
-  }
+@keyframes explode {
+  0% { opacity: 1; transform: translate(0,0); }
+  100% { opacity: 0; transform: translate(-50px, -50px); }
 }
