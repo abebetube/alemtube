@@ -167,6 +167,12 @@ header {
 }
 
 @media (max-width: 600px) {
-  .search-box { flex-direction: column; }
-  #fullscreen-btn { left: 50%; transform: translateX(-50%); }
+  .search-box {
+    flex-direction: column;
+  }
+
+  #fullscreen-btn {
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
