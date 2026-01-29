@@ -56,6 +56,7 @@ app.get("/search", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+console.log("API KEY:", process.env.YOUTUBE_API_KEY);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () =>
