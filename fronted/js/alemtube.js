@@ -30,8 +30,9 @@ async function searchVideos() {
 
   try {
     // כאן תשים את הכתובת של ה-backend שלך
-    const res = await fetch(`http://localhost:3000/search?q=${encodeURIComponent(query)}`);
-    const data = await res.json();
+    const res = await fetch(`https://YOUR-BACKEND-DOMAIN/search?q=${encodeURIComponent(query)}`);
+const data = await res.json();
+
 
     if (!data || data.length === 0) {
       alert("לא נמצאו סרטונים ניתנים לניגון");
