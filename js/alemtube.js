@@ -1,4 +1,6 @@
 console.log("🎬 AlemTube מתחיל...");
+const playerContainer = document.getElementById("player-container");
+const resultsContainer = document.getElementById("results");
 
 let playlist = [];
 let currentIndex = 0;
