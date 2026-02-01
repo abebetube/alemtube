@@ -1,27 +1,14 @@
-// הגדרת כתובת השרת
-const SERVER_URL = window.location.origin; // או כתובת ספציפית אם השרת במקום אחר
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    document.getElementById("splash").style.display = "none";
+  }, 4000);
+});
 
 let playlist = [];
 let currentIndex = 0;
 
-// טעינת האתר
-window.addEventListener("load", () => {
-  const splash = document.getElementById("splash");
-  let count = 0;
-  const interval = setInterval(() => {
-    launchFireworks();
-    count++;
-    if (count >= 4) clearInterval(interval);
-  }, 700);
+window.onload = () => loadFromCache();
 
-  setTimeout(() => {
-    splash.style.display = "none";
-  }, 4000);
-  
-  loadFromCache();
-});
-
-// אירועי מקלדת לחיפוש
 document.getElementById("searchInput").addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
@@ -29,7 +16,6 @@ document.getElementById("searchInput").addEventListener("keydown", (e) => {
   }
 });
 
-// חיפוש סרטונים
 async function searchVideos() {
   const query = document.getElementById("searchInput").value.trim();
   if (!query) return;
@@ -43,7 +29,7 @@ async function searchVideos() {
   if (isURL) {
     const match = query.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
     const videoId = match ? match[1] : "";
-    if (videoId && await checkEmbeddable(videoId)) {
+    if (videoId) {
       playlist = [{ videoId, title: "סרטון שהוזן", thumb: "" }];
       currentIndex = 0;
       saveToCache();
@@ -52,40 +38,29 @@ async function searchVideos() {
     return;
   }
 
+  // 🔹 קריאה ל-backend שלך במקום ישירות ל-YouTube
+  const url = `http://localhost:3000/search?q=${encodeURIComponent(query)}`;
+
   try {
-    // שימוש בשרת כמתווך
-    const response = await fetch(`${SERVER_URL}/search?q=${encodeURIComponent(query)}`);
-    const videos = await response.json();
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Server fetch failed " + res.status);
+    const data = await res.json();
 
-    if (!response.ok) {
-      throw new Error(videos.error || "שגיאה בחיפוש");
+    // כל הפריטים שהשרת מחזיר נשמרים ב-playlist
+    for (const item of data) {
+      playlist.push(item);
     }
 
-    // בדיקת סרטונים ניתנים להטמעה
-    for (const video of videos) {
-      if (await checkEmbeddable(video.videoId)) {
-        playlist.push({
-          videoId: video.videoId,
-          title: video.title,
-          thumb: video.thumb,
-        });
-      }
-    }
-
-    if (playlist.length === 0) {
-      return alert("לא נמצאו סרטונים ניתנים לניגון");
-    }
+    if (playlist.length === 0) return alert("לא נמצאו סרטונים ניתנים לניגון");
 
     currentIndex = 0;
     saveToCache();
     playVideo(currentIndex);
   } catch (e) {
     console.error("שגיאת חיפוש:", e);
-    alert("אירעה שגיאה בחיפוש. נסה שוב.");
   }
 }
 
-// ניגון סרטון
 function playVideo(index) {
   const video = playlist[index];
   if (!video) return;
@@ -116,10 +91,8 @@ function playVideo(index) {
   setTimeout(() => setupPlayerEvents(), 1000);
 }
 
-// הגדרת אירועי נגן YouTube
 function setupPlayerEvents() {
   if (typeof YT === "undefined" || typeof YT.Player === "undefined") return;
-  
   new YT.Player("ytplayer", {
     events: {
       onStateChange: (e) => {
@@ -133,52 +106,7 @@ function setupPlayerEvents() {
   });
 }
 
-// בדיקת אפשרות הטמעה דרך השרת
-async function checkEmbeddable(id) {
-  try {
-    const response = await fetch(`${SERVER_URL}/check-embeddable`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ videoId: id })
-    });
-
-    const data = await response.json();
-    
-    if (!response.ok) {
-      console.error("שגיאה בבדיקת הטמעה:", data.error);
-      return false;
-    }
-
-    return data.embeddable;
-  } catch (error) {
-    console.error("שגיאה בבדיקת הטמעה:", error);
-    return false;
-  }
-}
-
-// טיפול בפרסומות
-document.addEventListener('DOMContentLoaded', () => {
-  const ads = document.querySelectorAll('.ad, .ads, .advertisement');
-  ads.forEach(ad => ad.style.display = 'none');
-});
-
-function skipAds() {
-  const adElements = document.querySelectorAll('.ad, .advertisement, #ad-container');
-  adElements.forEach(el => {
-    el.style.display = 'none';
-  });
-
-  const skipButton = document.querySelector('.skip-ad, .skip-button');
-  if (skipButton) {
-    skipButton.click();
-  }
-}
-
-setInterval(skipAds, 3000);
-
-// ניהול מטמון
+// ✅ פונקציות קאש וטעינה
 function saveToCache() {
   localStorage.setItem("abe_playlist", JSON.stringify(playlist));
   localStorage.setItem("abe_index", currentIndex);
@@ -194,7 +122,27 @@ function loadFromCache() {
   }
 }
 
-// אפקט זיקוקים
+// 🔹 פונקציות לחסימת פרסומות
+document.addEventListener('DOMContentLoaded', () => {
+  const ads = document.querySelectorAll('.ad, .ads, .advertisement');
+  ads.forEach(ad => ad.style.display = 'none');
+});
+
+function skipAds() {
+  const adElements = document.querySelectorAll('.ad, .advertisement, #ad-container');
+  adElements.forEach(el => el.style.display = 'none');
+  const skipButton = document.querySelector('.skip-ad, .skip-button');
+  if (skipButton) skipButton.click();
+}
+
+setInterval(skipAds, 3000);
+
+// 🔹 YouTube iframe API
+const tag = document.createElement("script");
+tag.src = "https://www.youtube.com/iframe_api";
+document.head.appendChild(tag);
+
+// 🎆 Fireworks
 function launchFireworks(count = 5) {
   const container = document.querySelector('.fireworks');
 
@@ -224,7 +172,16 @@ function launchFireworks(count = 5) {
   }
 }
 
-// טעינת YouTube API
-const tag = document.createElement("script");
-tag.src = "https://www.youtube.com/iframe_api";
-document.head.appendChild(tag);
+window.addEventListener("load", () => {
+  const splash = document.getElementById("splash");
+  let count = 0;
+  const interval = setInterval(() => {
+    launchFireworks();
+    count++;
+    if (count >= 4) clearInterval(interval);
+  }, 700);
+
+  setTimeout(() => {
+    splash.style.display = "none";
+  }, 4000);
+});
