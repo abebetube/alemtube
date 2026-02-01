@@ -1,14 +1,27 @@
-window.addEventListener("load", () => {
-  setTimeout(() => {
-    document.getElementById("splash").style.display = "none";
-  }, 4000);
-});
+// הגדרת כתובת השרת
+const SERVER_URL = window.location.origin; // או כתובת ספציפית אם השרת במקום אחר
 
 let playlist = [];
 let currentIndex = 0;
 
-window.onload = () => loadFromCache();
+// טעינת האתר
+window.addEventListener("load", () => {
+  const splash = document.getElementById("splash");
+  let count = 0;
+  const interval = setInterval(() => {
+    launchFireworks();
+    count++;
+    if (count >= 4) clearInterval(interval);
+  }, 700);
 
+  setTimeout(() => {
+    splash.style.display = "none";
+  }, 4000);
+  
+  loadFromCache();
+});
+
+// אירועי מקלדת לחיפוש
 document.getElementById("searchInput").addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
@@ -16,6 +29,7 @@ document.getElementById("searchInput").addEventListener("keydown", (e) => {
   }
 });
 
+// חיפוש סרטונים
 async function searchVideos() {
   const query = document.getElementById("searchInput").value.trim();
   if (!query) return;
@@ -29,7 +43,7 @@ async function searchVideos() {
   if (isURL) {
     const match = query.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
     const videoId = match ? match[1] : "";
-    if (videoId) {
+    if (videoId && await checkEmbeddable(videoId)) {
       playlist = [{ videoId, title: "סרטון שהוזן", thumb: "" }];
       currentIndex = 0;
       saveToCache();
@@ -38,28 +52,40 @@ async function searchVideos() {
     return;
   }
 
-  // 🔹 קריאה ישירה ל-backend שלך
-  const url = `/search?q=${encodeURIComponent(query)}`;
-
   try {
-    const res = await fetch(url);
-    const data = await res.json();
+    // שימוש בשרת כמתווך
+    const response = await fetch(`${SERVER_URL}/search?q=${encodeURIComponent(query)}`);
+    const videos = await response.json();
 
-    // 🔹 פשוט מוסיפים את התוצאות – אין יותר בדיקה עם API_KEY
-    for (const item of data) {
-      playlist.push(item);
+    if (!response.ok) {
+      throw new Error(videos.error || "שגיאה בחיפוש");
     }
 
-    if (playlist.length === 0) return alert("לא נמצאו סרטונים ניתנים לניגון");
+    // בדיקת סרטונים ניתנים להטמעה
+    for (const video of videos) {
+      if (await checkEmbeddable(video.videoId)) {
+        playlist.push({
+          videoId: video.videoId,
+          title: video.title,
+          thumb: video.thumb,
+        });
+      }
+    }
+
+    if (playlist.length === 0) {
+      return alert("לא נמצאו סרטונים ניתנים לניגון");
+    }
 
     currentIndex = 0;
     saveToCache();
     playVideo(currentIndex);
   } catch (e) {
     console.error("שגיאת חיפוש:", e);
+    alert("אירעה שגיאה בחיפוש. נסה שוב.");
   }
 }
 
+// ניגון סרטון
 function playVideo(index) {
   const video = playlist[index];
   if (!video) return;
@@ -90,8 +116,10 @@ function playVideo(index) {
   setTimeout(() => setupPlayerEvents(), 1000);
 }
 
+// הגדרת אירועי נגן YouTube
 function setupPlayerEvents() {
   if (typeof YT === "undefined" || typeof YT.Player === "undefined") return;
+  
   new YT.Player("ytplayer", {
     events: {
       onStateChange: (e) => {
@@ -105,6 +133,32 @@ function setupPlayerEvents() {
   });
 }
 
+// בדיקת אפשרות הטמעה דרך השרת
+async function checkEmbeddable(id) {
+  try {
+    const response = await fetch(`${SERVER_URL}/check-embeddable`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ videoId: id })
+    });
+
+    const data = await response.json();
+    
+    if (!response.ok) {
+      console.error("שגיאה בבדיקת הטמעה:", data.error);
+      return false;
+    }
+
+    return data.embeddable;
+  } catch (error) {
+    console.error("שגיאה בבדיקת הטמעה:", error);
+    return false;
+  }
+}
+
+// טיפול בפרסומות
 document.addEventListener('DOMContentLoaded', () => {
   const ads = document.querySelectorAll('.ad, .ads, .advertisement');
   ads.forEach(ad => ad.style.display = 'none');
@@ -112,13 +166,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function skipAds() {
   const adElements = document.querySelectorAll('.ad, .advertisement, #ad-container');
-  adElements.forEach(el => el.style.display = 'none');
+  adElements.forEach(el => {
+    el.style.display = 'none';
+  });
+
   const skipButton = document.querySelector('.skip-ad, .skip-button');
-  if (skipButton) skipButton.click();
+  if (skipButton) {
+    skipButton.click();
+  }
 }
 
 setInterval(skipAds, 3000);
 
+// ניהול מטמון
 function saveToCache() {
   localStorage.setItem("abe_playlist", JSON.stringify(playlist));
   localStorage.setItem("abe_index", currentIndex);
@@ -134,42 +194,37 @@ function loadFromCache() {
   }
 }
 
-const tag = document.createElement("script");
-tag.src = "https://www.youtube.com/iframe_api";
-document.head.appendChild(tag);
-
+// אפקט זיקוקים
 function launchFireworks(count = 5) {
   const container = document.querySelector('.fireworks');
+
   for (let i = 0; i < count; i++) {
     const x = Math.random() * window.innerWidth;
     const y = Math.random() * window.innerHeight;
+
     for (let j = 0; j < 30; j++) {
       const particle = document.createElement('div');
       particle.className = 'particle';
+
       const angle = (Math.PI * 2 * j) / 30;
       const distance = 80 + Math.random() * 50;
       const dx = Math.cos(angle) * distance;
       const dy = Math.sin(angle) * distance;
+
       particle.style.setProperty('--x', `${dx}px`);
       particle.style.setProperty('--y', `${dy}px`);
       particle.style.left = `${x}px`;
       particle.style.top = `${y}px`;
       particle.style.background = `hsl(${Math.random() * 360}, 100%, 60%)`;
+
       container.appendChild(particle);
+
       setTimeout(() => particle.remove(), 1500);
     }
   }
 }
 
-window.addEventListener("load", () => {
-  const splash = document.getElementById("splash");
-  let count = 0;
-  const interval = setInterval(() => {
-    launchFireworks();
-    count++;
-    if (count >= 4) clearInterval(interval);
-  }, 700);
-  setTimeout(() => {
-    splash.style.display = "none";
-  }, 4000);
-});
+// טעינת YouTube API
+const tag = document.createElement("script");
+tag.src = "https://www.youtube.com/iframe_api";
+document.head.appendChild(tag);
