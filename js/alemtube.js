@@ -1,69 +1,62 @@
 console.log("🎬 AlemTube מתחיל...");
 
-const BACKEND_URL = "https://alemtube-v.onrender.com/search";
-
 let playlist = [];
 let currentIndex = 0;
 
-window.addEventListener("load", () => {
-  setTimeout(() => {
-    document.getElementById("splash").style.display = "none";
-  }, 3000);
-});
+const input = document.getElementById("searchInput");
 
-document.getElementById("searchBtn").onclick = searchVideos;
-document.getElementById("searchInput").addEventListener("keydown", e => {
+input.addEventListener("keydown", e => {
   if (e.key === "Enter") searchVideos();
 });
 
 async function searchVideos() {
-  const query = searchInput.value.trim();
-  if (!query) return;
+  const q = input.value.trim();
+  if (!q) return;
 
-  playlist = [];
-  results.innerHTML = "";
-  playerContainer.innerHTML = "";
+  document.getElementById("results").innerHTML = "";
+  document.getElementById("player-container").innerHTML = "";
 
   try {
-    const res = await fetch(`${BACKEND_URL}?q=${encodeURIComponent(query)}`);
-    const data = await res.json();
+    const res = await fetch(`https://alemtube-v.onrender.com/search?q=${encodeURIComponent(q)}`);
+    playlist = await res.json();
 
-    if (data.error) {
-      alert("שגיאה: " + data.error);
+    if (!playlist.length) {
+      alert("לא נמצאו תוצאות");
       return;
     }
 
-    playlist = data;
     playVideo(0);
-
-  } catch (err) {
-    console.error("❌ שגיאה:", err);
+  } catch (e) {
+    console.error("שגיאת חיפוש", e);
   }
 }
 
 function playVideo(index) {
+  const v = playlist[index];
   currentIndex = index;
-  const video = playlist[index];
-  if (!video) return;
 
-  playerContainer.innerHTML = `
-    <iframe
-      src="https://www.youtube-nocookie.com/embed/${video.videoId}?autoplay=1"
-      allowfullscreen
-      allow="autoplay">
-    </iframe>
+  document.getElementById("player-container").innerHTML = `
+    <iframe src="https://www.youtube-nocookie.com/embed/${v.videoId}?autoplay=1"
+      allowfullscreen allow="autoplay"></iframe>
   `;
 
+  const results = document.getElementById("results");
   results.innerHTML = "";
-  playlist.forEach((v, i) => {
+
+  playlist.forEach((vid, i) => {
     if (i === index) return;
+
     const div = document.createElement("div");
     div.className = "video-item";
     div.onclick = () => playVideo(i);
     div.innerHTML = `
-      <img src="${v.thumb}">
-      <div class="video-title">${v.title}</div>
+      <img src="${vid.thumb}">
+      <div class="video-title">${vid.title}</div>
     `;
     results.appendChild(div);
   });
 }
+
+window.addEventListener("load", () => {
+  setTimeout(() => document.getElementById("splash").style.display = "none", 3000);
+});
