@@ -1,73 +1,66 @@
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background: #f9f9f9;
   margin: 0;
-  direction: rtl;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
 }
 
-header {
-   background: #cc0000;
+.header {
+  background: #cc0000;
   color: white;
-  text-align: center;
-  padding: 1rem;
-  font-size: 1.6rem;
-  font-weight: bold;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
 }
 
 .container {
   max-width: 900px;
-  margin: 0 auto;
-  padding: 1rem;
+  margin: auto;
+  padding: 15px;
 }
 
 .search-box {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .search-box input {
   flex: 1;
-  max-width: 600px;
-  padding: 0.7rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  padding: 10px;
+  font-size: 16px;
 }
 
 .search-box button {
+  padding: 10px 16px;
   background: #cc0000;
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 0.7rem 1rem;
   cursor: pointer;
-}
-
-#player-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 2rem;
 }
 
 #player-container iframe {
   width: 100%;
-  max-width: 900px;
   aspect-ratio: 16 / 9;
-  border-radius: 12px;
+  border-radius: 10px;
 }
 
 #results {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+  gap: 12px;
+  margin-top: 20px;
 }
 
 .video-item {
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  overflow: hidden;
   cursor: pointer;
 }
 
@@ -76,10 +69,11 @@ header {
 }
 
 .video-title {
-  padding: 0.6rem;
-  font-weight: bold;
+  padding: 8px;
+  font-size: 14px;
 }
 
+/* Splash */
 #splash {
   position: fixed;
   inset: 0;
@@ -90,31 +84,11 @@ header {
   z-index: 9999;
 }
 
-.logo-area {
+.splash-inner {
   text-align: center;
+  color: white;
 }
 
-.logo-area img {
-  width: 120px;      /* ⬅️ מגבלה חשובה */
-  height: auto;
-  margin-bottom: 1rem;
+.splash-inner img {
+  width: 120px;
 }
-
-.logo-area .title {
-  color: #cc0000;
-  font-size: 2.2rem;
-  font-weight: bold;
-}
-
-
-@media (max-width: 600px) {
-  .search-box {
-    flex-direction: column;
-  }
-
-  .search-box input,
-  .search-box button {
-    width: 100%;
-  }
-}
-
