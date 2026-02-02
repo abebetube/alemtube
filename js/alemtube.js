@@ -118,7 +118,7 @@ async function searchVideos() {
   }
 }
 */
-function playVideo(index) {
+/*function playVideo(index) {
   const video = playlist[index];
   if (!video) return;
 
@@ -127,7 +127,28 @@ function playVideo(index) {
 
   setTimeout(() => {
     document.getElementById("player-container").scrollIntoView({ behavior: "smooth" });
-  }, 500);
+  }, 500);*/
+
+function playVideo(index) {
+  const video = playlist[index];
+  if (!video) return;
+
+  document.getElementById("player-container").innerHTML = `
+    <iframe
+      id="ytplayer"
+      src="https://www.youtube-nocookie.com/embed/${video.videoId}?autoplay=1&rel=0&modestbranding=1&fs=0"
+      allow="autoplay"
+      sandbox="allow-scripts allow-same-origin"
+      referrerpolicy="no-referrer"
+    ></iframe>
+  `;
+
+  setTimeout(() => {
+    document
+      .getElementById("player-container")
+      .scrollIntoView({ behavior: "smooth" });
+  }, 300);
+
 
   const resultsDiv = document.getElementById("results");
   resultsDiv.innerHTML = "";
