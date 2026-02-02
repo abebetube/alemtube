@@ -74,7 +74,7 @@ body {
 
           
     header {
-          pa
+      padding: 1rem;
       background-color: #cc0000;
       color: white;
       text-align: center;
