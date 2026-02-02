@@ -263,3 +263,14 @@ window.addEventListener("load", () => {
     splash.style.display = "none";
   }, 4000);
 });
+
+// לביטול פתיחה חיוצונית
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("a");
+  if (a && a.href.includes("youtube.com")) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  }
+});
+
