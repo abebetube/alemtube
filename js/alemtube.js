@@ -294,4 +294,11 @@ document.addEventListener("click", (e) => {
   }
 }, true);
 
+// overlay מציג 
+function showAppOverlay() {
+  const overlay = document.createElement("div");
+  overlay.id = "app-overlay";
+  overlay.innerHTML = "<p>בחר סרטון מהאפליקציה</p>";
+  document.getElementById("player-container").appendChild(overlay);
+}
 
