@@ -9,11 +9,19 @@ let currentIndex = 0;
 
 window.onload = () => loadFromCache();
 
+// חיפטש בליצה על אינטר
 document.getElementById("searchInput").addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
     searchVideos();
   }
+});
+
+// חיפוש בליחצה על כפתור חיפוש
+document.getElementById("searchBtn").addEventListener("click", () => {
+  const query = document.getElementById("searchInput").value.trim();
+  if (!query) return;
+  searchVideos();
 });
 
 
