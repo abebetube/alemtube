@@ -5,7 +5,7 @@
       }, 4000);
     });
 
-    const API_KEY = "AIzaSyCKWg2Po9gpQTx2-SSadDOouTB04jBFAAU";
+   // const API_KEY = "AIzaSyCKWg2Po9gpQTx2-SSadDOouTB04jBFAAU";
     let playlist = [];
     let currentIndex = 0;
 
@@ -19,54 +19,57 @@
     });
 
     async function searchVideos() {
-      const query = document.getElementById("searchInput").value.trim();
-      if (!query) return;
+  const input = document.getElementById("searchInput");
+  if (!input) return;
 
-      playlist = [];
+  const query = input.value.trim();
+  if (!query) return;
+
+  playlist = [];
+  currentIndex = 0;
+
+  const resultsDiv = document.getElementById("results");
+  const playerContainer = document.getElementById("player-container");
+  if (resultsDiv) resultsDiv.innerHTML = "";
+  if (playerContainer) playerContainer.innerHTML = "";
+
+  // אם המשתמש מכניס URL של YouTube
+  const isURL = query.includes("youtube.com") || query.includes("youtu.be");
+  if (isURL) {
+    const match = query.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
+    const videoId = match ? match[1] : "";
+    if (videoId && (await checkEmbeddable(videoId))) {
+      playlist = [{ videoId, title: "סרטון שהוזן", thumb: "" }];
       currentIndex = 0;
-      document.getElementById("results").innerHTML = "";
-      document.getElementById("player-container").innerHTML = "";
-
-      const isURL = query.includes("youtube.com") || query.includes("youtu.be");
-      if (isURL) {
-        const match = query.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
-        const videoId = match ? match[1] : "";
-        if (videoId && await checkEmbeddable(videoId)) {
-          playlist = [{ videoId, title: "סרטון שהוזן", thumb: "" }];
-          currentIndex = 0;
-          saveToCache();
-          playVideo(currentIndex);
-        }
-        return;
-      }
-
-      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(
-        query)}&type=video&key=${API_KEY}&maxResults=30`;
-
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-
-        for (const item of data.items) {
-          const vid = item.id.videoId;
-          if (await checkEmbeddable(vid)) {
-            playlist.push({
-              videoId: vid,
-              title: item.snippet.title,
-              thumb: item.snippet.thumbnails.medium.url,
-            });
-          }
-        }
-
-        if (playlist.length === 0) return alert("לא נמצאו סרטונים ניתנים לניגון");
-
-        currentIndex = 0;
-        saveToCache();
-        playVideo(currentIndex);
-      } catch (e) {
-        console.error("שגיאת חיפוש:", e);
-      }
+      saveToCache();
+      playVideo(currentIndex);
     }
+    return;
+  }
+
+  // 🔹 קריאה לשרת שלך במקום ל-YouTube API
+  const url = `https://alemtube-v.onrender.com/search?q=${encodeURIComponent(query)}`;
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Server fetch failed " + res.status);
+    const data = await res.json();
+
+    // הנתונים שהשרת מחזיר צריכים להיות במבנה: { videoId, title, thumb }
+    for (const item of data) {
+      if (await checkEmbeddable(item.videoId)) playlist.push(item);
+    }
+
+    if (playlist.length === 0) return alert("לא נמצאו סרטונים ניתנים לניגון");
+
+    currentIndex = 0;
+    saveToCache();
+    playVideo(currentIndex);
+  } catch (e) {
+    console.error("שגיאת חיפוש:", e);
+  }
+}
+
 
     function playVideo(index) {
       const video = playlist[index];
