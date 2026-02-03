@@ -102,7 +102,24 @@ body {
       padding: 1rem;
     }
 
-    .search-box {
+.search-box {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 0.7rem;
+  font-size: 1rem;
+}
+
+.search-box button {
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+}
+
+    /*.search-box {
       display: flex;
       gap: 0.5rem;
       margin-bottom: 1.5rem;
@@ -115,12 +132,6 @@ body {
       border-radius: 8px;
       font-size: 1rem;
     }
-#app-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  z-index: 999;
-}
 
 
 
@@ -134,6 +145,13 @@ body {
       cursor: pointer;
       font-weight: bold;
     }
+*/
+#app-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 999;
+}
 
     #player-container {
       margin-bottom: 2rem;
@@ -152,7 +170,7 @@ body {
 
     #results {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 1rem;
     }
 
@@ -202,3 +220,33 @@ body {
 .ytp-ce-element {
   display: none !important;
 }
+//וידאו רספונסיבי
+
+
+.player-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin-bottom: 1rem;
+}
+
+.player-wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+          
+          //Media Queries
+@media (max-width: 600px) {
+  header {
+    font-size: 1.2rem;
+  }
+
+  .search-box {
+    flex-direction: column;
+  }
+}
+
