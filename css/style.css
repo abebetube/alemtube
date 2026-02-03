@@ -1,4 +1,5 @@
-body {
+
+    body {
       font-family: 'Segoe UI', sans-serif;
       background-color: #f9f9f9;
       margin: 0;
@@ -6,6 +7,111 @@ body {
       direction: rtl;
     }
 
+    header {
+      background-color: #cc0000;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 1rem;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-box input {
+      flex: 1;
+      padding: 0.7rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .search-box button {
+      padding: 0.7rem 1rem;
+      background-color: #cc0000;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #player-container {
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    #player-container iframe {
+      width: 100%;
+      max-width: 100%;
+      aspect-ratio: 16/9;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #results {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .video-item {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .video-item:hover {
+      transform: translateY(-5px);
+    }
+
+    .video-item img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    .video-title {
+      padding: 0.6rem;
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: #333;
+    }
+
+    #fullscreen-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 10;
+      padding: 0.7rem 1rem;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .ad, .ads, .advertisement {
+  display: none !important;
+}
 
    /* Splash screen - fireworks style */
 #splash {
@@ -70,183 +176,4 @@ body {
         left: 50%;
         transform: translateX(-50%);
       }
-
-
- header {
-  background-color: #cc0000;
-  color: white;
-  text-align: center;
-  font-weight: bold;
-  padding-top: env(safe-area-inset-top, 1rem);
-  padding-bottom: 1rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  font-size: clamp(1.2rem, 4vw, 1.6rem);
-}
-
-    
-    /*header {
-      padding: 1rem;
-      background-color: #cc0000;
-      color: white;
-      text-align: center;
-      padding: 1rem;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }*/
-
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 1rem;
     }
-
-.search-box {
-  display: flex;
-  gap: 0.5rem;
-  margin: 1rem 0;
-}
-
-.search-box input {
-  flex: 1;
-  padding: 0.7rem;
-  font-size: 1rem;
-}
-
-.search-box button {
-  padding: 0.7rem 1rem;
-  font-size: 1rem;
-}
-
-    /*.search-box {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .search-box input {
-      flex: 1;
-      padding: 0.7rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-
-
-
-
-    .search-box button {
-      padding: 0.7rem 1rem;
-      background-color: #cc0000;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-*/
-#app-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  z-index: 999;
-}
-
-    #player-container {
-      margin-bottom: 2rem;
-      display: flex;
-      justify-content: center;
-    }
-
-    #player-container iframe {
-      width: 100%;
-      max-width: 100%;
-      aspect-ratio: 16/9;
-      border: none;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    #results {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 1rem;
-    }
-
-    .video-item {
-      background-color: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .video-item:hover {
-      transform: translateY(-5px);
-    }
-
-    .video-item img {
-      width: 100%;
-      height: auto;
-      object-fit: cover;
-    }
-
-    .video-title {
-      padding: 0.6rem;
-      font-size: 0.95rem;
-      font-weight: bold;
-      color: #333;
-    }
-
-    
-
-    .ad, .ads, .advertisement {
-  display: none !important;
-}
-
-
-
-/* hide youtube suggested overlay */
-#player-container iframe {
-  pointer-events: auto;
-}
-
-.ytp-pause-overlay,
-.ytp-endscreen-content,
-.ytp-ce-element {
-  display: none !important;
-}
-//וידאו רספונסיבי
-
-
-.player-wrapper {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  margin-bottom: 1rem;
-}
-
-.player-wrapper iframe {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-
-
-          
-          //Media Queries
-@media (max-width: 600px) {
-  header {
-    font-size: 1.2rem;
-  }
-
-  .search-box {
-    flex-direction: column;
-  }
-}
-
