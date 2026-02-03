@@ -25,17 +25,6 @@ document.getElementById("searchBtn").addEventListener("click", () => {
 });
 
 
-async function checkEmbeddable(id) {
-  try {
-    const res = await fetch(`https://alemtube-v.onrender.com/videos?id=${id}`);
-    if (!res.ok) throw new Error("Server error " + res.status);
-    const data = await res.json();
-    return data.embeddable ?? false;
-  } catch {
-    return false;
-  }
-}
-
 async function searchVideos() {
   const query = document.getElementById("searchInput").value.trim();
   if (!query) return;
@@ -63,18 +52,15 @@ async function searchVideos() {
 
   try {
     const res = await fetch(url);
-if (!res.ok) throw new Error("Server fetch failed " + res.status);
-const data = await res.json();
+    if (!res.ok) throw new Error("Server fetch failed " + res.status);
+    const data = await res.json();
 
-const checks = data.map(item =>
-  checkEmbeddable(item.videoId).then(ok => ok ? item : null)
-);
-
-const results = await Promise.all(checks);
-
-playlist = results.filter(item => item !== null);
-
-    
+    // לולאה סינכרונית – זה מה שעבד
+    for (const item of data) {
+      if (await checkEmbeddable(item.videoId)) {
+        playlist.push(item);
+      }
+    }
 
     if (playlist.length === 0) return alert("לא נמצאו סרטונים ניתנים לניגון");
 
@@ -85,6 +71,7 @@ playlist = results.filter(item => item !== null);
     console.error("שגיאת חיפוש:", e);
   }
 }
+
 
 /*async function searchVideos() {
   const query = document.getElementById("searchInput").value.trim();
