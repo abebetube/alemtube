@@ -17,12 +17,6 @@ document.getElementById("searchInput").addEventListener("keydown", (e) => {
   }
 });
 
-// חיפוש בליחצה על כפתור חיפוש
-document.getElementById("searchBtn").addEventListener("click", () => {
-  const query = document.getElementById("searchInput").value.trim();
-  if (!query) return;
-  searchVideos();
-});
 
 
 async function searchVideos() {
