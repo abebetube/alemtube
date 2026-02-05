@@ -66,8 +66,8 @@ header {
 .header-title {
   font-size: 1.8rem;
   font-weight: 800;
-  margin: 0;
-  background: linear-gradient(45deg, #ffffff, #ffcccc);
+  margin: center;
+  background: linear-gradient(45deg, #e01919, #f1b205);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -406,7 +406,7 @@ header {
   flex-grow: 1;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  
   -webkit-box-orient: vertical;
   background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.02));
 }
